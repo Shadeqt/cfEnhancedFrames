@@ -102,8 +102,8 @@ addon:RegisterModuleInit(function()
     end
 end)
 
--- Slash command: /cfef
-SLASH_CFENHANCEDFRAMES1 = "/cfef"
-SlashCmdList["CFENHANCEDFRAMES"] = function()
+-- Slash command: /cff
+SLASH_CFFRAMES1 = "/cff"
+SlashCmdList["CFFRAMES"] = function()
     Settings.OpenToCategory(panel.name)
 end
