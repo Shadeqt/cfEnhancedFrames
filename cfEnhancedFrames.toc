@@ -1,0 +1,23 @@
+## Interface: 11504
+## Title: cfEnhancedFrames
+## Notes: Simple health and resource display for target frame and nameplates
+## Author: Claude
+## Version: 1.0
+## SavedVariables: cfEnhancedFramesDB
+
+# Infrastructure
+Init.lua
+
+# UI
+Interface.lua
+
+# Target Frame Modules
+TargetFrame\TargetFrameHealth.lua
+TargetFrame\TargetFrameClassification.lua
+TargetFrame\TargetFrameThreat.lua
+
+# Nameplate Modules
+Nameplates\NameplateHealth.lua
+Nameplates\NameplateClassification.lua
+Nameplates\NameplateThreatGlow.lua
+Nameplates\NameplateCore.lua
