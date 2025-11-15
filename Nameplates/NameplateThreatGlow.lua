@@ -1,5 +1,5 @@
 -- Nameplate threat glow module
-local addon = cfEnhancedFrames
+local addon = cfFrames
 
 -- Update nameplate threat glow
 function addon.UpdateNameplateThreatGlow(frame, unit)

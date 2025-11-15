@@ -1,5 +1,5 @@
 -- Nameplate health numbers module
-local addon = cfEnhancedFrames
+local addon = cfFrames
 
 -- Update nameplate health text
 function addon.UpdateNameplateHealth(frame, unit)

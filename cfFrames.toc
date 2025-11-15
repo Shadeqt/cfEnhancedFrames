@@ -1,9 +1,9 @@
 ## Interface: 11504
-## Title: cfEnhancedFrames
+## Title: cfFrames
 ## Notes: Simple health and resource display for target frame and nameplates
 ## Author: Claude
 ## Version: 1.0
-## SavedVariables: cfEnhancedFramesDB
+## SavedVariables: cfFramesDB
 
 # Infrastructure
 Init.lua

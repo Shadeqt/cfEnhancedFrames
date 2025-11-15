@@ -1,6 +1,6 @@
 -- Check if either threat module is enabled
-local db = cfEnhancedFramesDB
-local addon = cfEnhancedFrames
+local db = cfFramesDB
+local addon = cfFrames
 
 if not db[addon.MODULES.THREAT_GLOW] and not db[addon.MODULES.THREAT_NUMERIC] then return end
 

@@ -1,6 +1,6 @@
 -- Check if module is enabled
-local db = cfEnhancedFramesDB
-local addon = cfEnhancedFrames
+local db = cfFramesDB
+local addon = cfFrames
 
 if not db[addon.MODULES.TARGET_HEALTH] then return end
 

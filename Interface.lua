@@ -1,18 +1,18 @@
 -- Localize for performance and consistency
-local db = cfEnhancedFramesDB
-local addon = cfEnhancedFrames
+local db = cfFramesDB
+local addon = cfFrames
 
 -- Module-level state
 local pendingState = nil
 local allCheckboxes = {}
 
 -- Initialization code
-local panel = CreateFrame("Frame", "cfEnhancedFramesPanel")
-panel.name = "cfEnhancedFrames"
+local panel = CreateFrame("Frame", "cfFramesPanel")
+panel.name = "cfFrames"
 
 local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 title:SetPoint("TOPLEFT", 16, -16)
-title:SetText("cfEnhancedFrames Settings")
+title:SetText("cfFrames Settings")
 
 -- Helper function to create a checkbox
 local function createCheckbox(parent, anchorTo, xOffset, yOffset, moduleName, labelText)
@@ -51,7 +51,7 @@ reloadBtn:SetText("Reload UI")
 reloadBtn:SetScript("OnClick", function()
     -- Commit pending changes to database
     for key, value in pairs(pendingState) do
-        cfEnhancedFramesDB[key] = value
+        cfFramesDB[key] = value
     end
     ReloadUI()
 end)
@@ -68,13 +68,13 @@ info:SetText("Type |cffFFFF00/cfef|r to open this panel")
 local function initializeCheckboxes()
     -- Copy database to pending state
     pendingState = {
-        [addon.MODULES.TARGET_HEALTH] = cfEnhancedFramesDB[addon.MODULES.TARGET_HEALTH],
-        [addon.MODULES.RARE_ELITE] = cfEnhancedFramesDB[addon.MODULES.RARE_ELITE],
-        [addon.MODULES.THREAT_GLOW] = cfEnhancedFramesDB[addon.MODULES.THREAT_GLOW],
-        [addon.MODULES.THREAT_NUMERIC] = cfEnhancedFramesDB[addon.MODULES.THREAT_NUMERIC],
-        [addon.MODULES.NAMEPLATE_HEALTH] = cfEnhancedFramesDB[addon.MODULES.NAMEPLATE_HEALTH],
-        [addon.MODULES.NAMEPLATE_CLASSIFICATION] = cfEnhancedFramesDB[addon.MODULES.NAMEPLATE_CLASSIFICATION],
-        [addon.MODULES.NAMEPLATE_THREAT_GLOW] = cfEnhancedFramesDB[addon.MODULES.NAMEPLATE_THREAT_GLOW],
+        [addon.MODULES.TARGET_HEALTH] = cfFramesDB[addon.MODULES.TARGET_HEALTH],
+        [addon.MODULES.RARE_ELITE] = cfFramesDB[addon.MODULES.RARE_ELITE],
+        [addon.MODULES.THREAT_GLOW] = cfFramesDB[addon.MODULES.THREAT_GLOW],
+        [addon.MODULES.THREAT_NUMERIC] = cfFramesDB[addon.MODULES.THREAT_NUMERIC],
+        [addon.MODULES.NAMEPLATE_HEALTH] = cfFramesDB[addon.MODULES.NAMEPLATE_HEALTH],
+        [addon.MODULES.NAMEPLATE_CLASSIFICATION] = cfFramesDB[addon.MODULES.NAMEPLATE_CLASSIFICATION],
+        [addon.MODULES.NAMEPLATE_THREAT_GLOW] = cfFramesDB[addon.MODULES.NAMEPLATE_THREAT_GLOW],
     }
 
     -- Configure each checkbox
@@ -93,7 +93,7 @@ end
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
 frame:SetScript("OnEvent", function(self, event, addonName)
-    if addonName ~= "cfEnhancedFrames" then return end
+    if addonName ~= "cfFrames" then return end
     self:UnregisterEvent("ADDON_LOADED")
     initializeCheckboxes()
 end)

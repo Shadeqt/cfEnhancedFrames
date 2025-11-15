@@ -1,9 +1,9 @@
 -- Create addon namespace
-cfEnhancedFrames = {}
+cfFrames = {}
 
 -- Localize for performance and consistency
-local db = cfEnhancedFramesDB
-local addon = cfEnhancedFrames
+local db = cfFramesDB
+local addon = cfFrames
 
 -- Module definitions
 addon.MODULES = {
@@ -49,7 +49,7 @@ local dbDefaults = {
 -- Database initialization
 if not db then
     db = {}
-    cfEnhancedFramesDB = db
+    cfFramesDB = db
 end
 
 -- Apply defaults for any missing keys

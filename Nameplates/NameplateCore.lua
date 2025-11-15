@@ -1,6 +1,6 @@
 -- Nameplate core hook - central point for all nameplate updates
-local db = cfEnhancedFramesDB
-local addon = cfEnhancedFrames
+local db = cfFramesDB
+local addon = cfFrames
 
 -- Don't load if no nameplate modules are enabled
 if not db[addon.MODULES.NAMEPLATE_HEALTH]

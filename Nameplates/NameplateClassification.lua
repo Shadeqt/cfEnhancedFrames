@@ -1,5 +1,5 @@
 -- Nameplate classification module
-local addon = cfEnhancedFrames
+local addon = cfFrames
 
 -- Update nameplate classification icon
 function addon.UpdateNameplateClassification(frame, unit)
