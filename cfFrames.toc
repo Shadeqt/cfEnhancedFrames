@@ -20,4 +20,3 @@ TargetFrame\TargetFrameThreat.lua
 Nameplates\NameplateHealth.lua
 Nameplates\NameplateClassification.lua
 Nameplates\NameplateThreatGlow.lua
-Nameplates\NameplateCore.lua

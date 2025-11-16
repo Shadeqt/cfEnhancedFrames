@@ -1,8 +1,11 @@
 -- Nameplate health numbers module
 local addon = cfFrames
 
+-- Don't load if module is disabled
+if not cfFramesDB[addon.MODULES.NAMEPLATE_HEALTH] then return end
+
 -- Update nameplate health text
-function addon.UpdateNameplateHealth(frame, unit)
+local function UpdateHealth(frame, unit)
     -- Create text frame if it doesn't exist
     if not frame.cfHealthText then
         frame.cfHealthText = frame.healthBar:CreateFontString(nil, "OVERLAY", "TextStatusBarText")
@@ -15,3 +18,22 @@ function addon.UpdateNameplateHealth(frame, unit)
     frame.cfHealthText:SetText(health)
     frame.cfHealthText:Show()
 end
+
+-- Hook health updates
+hooksecurefunc("CompactUnitFrame_UpdateHealth", function(frame)
+    local unit = frame.displayedUnit
+    -- Filter out players
+    if UnitIsPlayer(unit) then
+        if frame.cfHealthText then frame.cfHealthText:Hide() end
+        return
+    end
+
+    -- Filter out non-hostile units
+    local reaction = UnitReaction(unit, "player")
+    if not reaction or reaction > addon.UNIT_REACTION.NEUTRAL_HOSTILE then
+        if frame.cfHealthText then frame.cfHealthText:Hide() end
+        return
+    end
+
+    UpdateHealth(frame, unit)
+end)

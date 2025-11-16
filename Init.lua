@@ -20,10 +20,30 @@ addon.MODULES = {
 
 -- Threat color definitions (used by ThreatIndicators and NameplateThreatGlow)
 addon.THREAT_COLORS = {
-    [0] = {0.69, 0.69, 0.69},  -- Gray: no threat
+    [0] = {0.69, 0.69, 0.69},   -- Gray: no threat
     [1] = {1, 1, 0.47},         -- Yellow: low threat
     [2] = {1, 0.6, 0},          -- Orange: gaining threat
     [3] = {1, 0, 0}             -- Red: high threat/tanking
+}
+
+-- Threat status constants (return values from UnitThreatSituation)
+addon.THREAT_STATUS = {
+    NONE = 0,       -- No threat / Not on threat table
+    LOW = 1,        -- Low threat
+    GAINING = 2,    -- Gaining threat / Close to tanking
+    TANKING = 3     -- High threat / Tanking
+}
+
+-- Unit reaction constants (return values from UnitReaction)
+addon.UNIT_REACTION = {
+    HATED = 1,              -- Extremely hostile
+    HOSTILE = 2,            -- Hostile
+    UNFRIENDLY = 3,         -- Unfriendly
+    NEUTRAL_HOSTILE = 4,    -- Neutral (attackable, e.g. yellow mobs/bosses)
+    NEUTRAL = 5,            -- Neutral (non-hostile, e.g. critters)
+    FRIENDLY = 6,           -- Friendly
+    HONORED = 7,            -- Honored
+    EXALTED = 8             -- Exalted
 }
 
 -- Classification type constants (used by NameplateClassification and RareElite)
@@ -87,3 +107,4 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         callback()
     end
 end)
+

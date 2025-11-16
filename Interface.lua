@@ -107,3 +107,4 @@ SLASH_CFFRAMES1 = "/cff"
 SlashCmdList["CFFRAMES"] = function()
     Settings.OpenToCategory(panel.name)
 end
+

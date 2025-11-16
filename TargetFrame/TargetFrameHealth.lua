@@ -1,13 +1,11 @@
 local addon = cfFrames
 
-addon:RegisterModuleInit(function()
-    local db = cfFramesDB
+-- Module-level state
+local TextObjects
 
-    -- Check if module is enabled
-    if not db[addon.MODULES.TARGET_HEALTH] then return end
-
-    -- Create text objects for health and mana bars
-    local TextObjects = {
+-- Create and configure text objects for health and mana bars
+local function SetupTextObjects()
+    TextObjects = {
         [TargetFrameHealthBar] = {
             TextString = TargetFrameTextureFrame:CreateFontString(nil, "OVERLAY", "TextStatusBarText"),
             LeftText = TargetFrameTextureFrame:CreateFontString(nil, "OVERLAY", "TextStatusBarText"),
@@ -20,7 +18,7 @@ addon:RegisterModuleInit(function()
         }
     }
 
-    -- Set anchors (relative to TargetFrameTextureFrame, matching ModernTargetFrame positioning)
+    -- Set anchors (relative to TargetFrameTextureFrame)
     TextObjects[TargetFrameHealthBar].TextString:SetPoint("CENTER", TargetFrameTextureFrame, "CENTER", -50, 3)
     TextObjects[TargetFrameHealthBar].LeftText:SetPoint("LEFT", TargetFrameTextureFrame, "LEFT", 8, 3)
     TextObjects[TargetFrameHealthBar].RightText:SetPoint("RIGHT", TargetFrameTextureFrame, "RIGHT", -110, 3)
@@ -36,12 +34,21 @@ addon:RegisterModuleInit(function()
         end
         TextStatusBar_UpdateTextString(bar)
     end
+end
 
-    -- Hook UnitFrameHealthBar_Update to disable showPercentage (like ModernTargetFrame's HealthVisibilityPatch)
-    hooksecurefunc("UnitFrameHealthBar_Update", function(statusbar, unit)
-        if TextObjects[statusbar] and statusbar.showPercentage then
-            statusbar.showPercentage = false
-            TextStatusBar_UpdateTextString(statusbar)
-        end
-    end)
+-- Hook handler: disable showPercentage to prevent default percentage display
+local function OnHealthBarUpdate(statusbar, unit)
+    if TextObjects[statusbar] and statusbar.showPercentage then
+        statusbar.showPercentage = false
+        TextStatusBar_UpdateTextString(statusbar)
+    end
+end
+
+-- Module initialization
+addon:RegisterModuleInit(function()
+    if not cfFramesDB[addon.MODULES.TARGET_HEALTH] then return end
+
+    SetupTextObjects()
+    
+    hooksecurefunc("UnitFrameHealthBar_Update", OnHealthBarUpdate)
 end)

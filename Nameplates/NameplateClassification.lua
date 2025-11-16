@@ -1,8 +1,11 @@
 -- Nameplate classification module
 local addon = cfFrames
 
+-- Don't load if module is disabled
+if not cfFramesDB[addon.MODULES.NAMEPLATE_CLASSIFICATION] then return end
+
 -- Update nameplate classification icon
-function addon.UpdateNameplateClassification(frame, unit)
+local function UpdateClassification(frame, unit)
     local classification = UnitClassification(unit)
     local isElite = classification == addon.CLASSIFICATIONS.ELITE or classification == addon.CLASSIFICATIONS.WORLDBOSS
     local isRare = classification == addon.CLASSIFICATIONS.RARE or classification == addon.CLASSIFICATIONS.RAREELITE
@@ -26,3 +29,11 @@ function addon.UpdateNameplateClassification(frame, unit)
     )
     frame.cfClassification:Show()
 end
+
+-- Register nameplate creation event
+local classFrame = CreateFrame("Frame")
+classFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+classFrame:SetScript("OnEvent", function(self, event, unitID)
+    local nameplate = C_NamePlate.GetNamePlateForUnit(unitID)
+    UpdateClassification(nameplate.UnitFrame, unitID)
+end)
