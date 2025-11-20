@@ -1,9 +1,6 @@
 -- Nameplate health numbers module
 local addon = cfFrames
 
--- Don't load if module is disabled
-if not cfFramesDB[addon.MODULES.NAMEPLATE_HEALTH] then return end
-
 -- Update nameplate health text
 local function UpdateHealth(frame, unit)
     -- Create text frame if it doesn't exist
@@ -19,21 +16,30 @@ local function UpdateHealth(frame, unit)
     frame.cfHealthText:Show()
 end
 
--- Hook health updates
-hooksecurefunc("CompactUnitFrame_UpdateHealth", function(frame)
-    local unit = frame.displayedUnit
-    -- Filter out players
-    if UnitIsPlayer(unit) then
-        if frame.cfHealthText then frame.cfHealthText:Hide() end
-        return
-    end
+-- Initialize module (called after SavedVariables load)
+local function Initialize()
+    -- Don't load if module is disabled
+    if not cfFramesDB[addon.MODULES.NAMEPLATE_HEALTH] then return end
 
-    -- Filter out non-hostile units
-    local reaction = UnitReaction(unit, "player")
-    if not reaction or reaction > addon.UNIT_REACTION.NEUTRAL_HOSTILE then
-        if frame.cfHealthText then frame.cfHealthText:Hide() end
-        return
-    end
+    -- Hook health updates
+    hooksecurefunc("CompactUnitFrame_UpdateHealth", function(frame)
+        local unit = frame.displayedUnit
+        -- Filter out players
+        if UnitIsPlayer(unit) then
+            if frame.cfHealthText then frame.cfHealthText:Hide() end
+            return
+        end
 
-    UpdateHealth(frame, unit)
-end)
+        -- Filter out non-hostile units
+        local reaction = UnitReaction(unit, "player")
+        if not reaction or reaction > addon.UNIT_REACTION.NEUTRAL_HOSTILE then
+            if frame.cfHealthText then frame.cfHealthText:Hide() end
+            return
+        end
+
+        UpdateHealth(frame, unit)
+    end)
+end
+
+-- Register initialization callback
+addon:RegisterModuleInit(Initialize)

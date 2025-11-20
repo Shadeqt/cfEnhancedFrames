@@ -1,9 +1,6 @@
 -- Nameplate classification module
 local addon = cfFrames
 
--- Don't load if module is disabled
-if not cfFramesDB[addon.MODULES.NAMEPLATE_CLASSIFICATION] then return end
-
 -- Update nameplate classification icon
 local function UpdateClassification(frame, unit)
     local classification = UnitClassification(unit)
@@ -30,10 +27,19 @@ local function UpdateClassification(frame, unit)
     frame.cfClassification:Show()
 end
 
--- Register nameplate creation event
-local classFrame = CreateFrame("Frame")
-classFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-classFrame:SetScript("OnEvent", function(self, event, unitID)
-    local nameplate = C_NamePlate.GetNamePlateForUnit(unitID)
-    UpdateClassification(nameplate.UnitFrame, unitID)
-end)
+-- Initialize module (called after SavedVariables load)
+local function Initialize()
+    -- Don't load if module is disabled
+    if not cfFramesDB[addon.MODULES.NAMEPLATE_CLASSIFICATION] then return end
+
+    -- Register nameplate creation event
+    local classFrame = CreateFrame("Frame")
+    classFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    classFrame:SetScript("OnEvent", function(self, event, unitID)
+        local nameplate = C_NamePlate.GetNamePlateForUnit(unitID)
+        UpdateClassification(nameplate.UnitFrame, unitID)
+    end)
+end
+
+-- Register initialization callback
+addon:RegisterModuleInit(Initialize)

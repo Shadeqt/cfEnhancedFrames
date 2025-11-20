@@ -1,9 +1,6 @@
 -- Nameplate threat glow module
 local addon = cfFrames
 
--- Don't load if module is disabled
-if not cfFramesDB[addon.MODULES.NAMEPLATE_THREAT_GLOW] then return end
-
 -- Calculate glow dimensions based on healthBar size (hybrid: fixed + proportional scaling)
 local function CalculateGlowSize(healthBar)
     local hpWidth, hpHeight = healthBar:GetSize()
@@ -59,15 +56,32 @@ local function UpdateThreatGlow(unitID)
     frame.cfThreatGlow:Show()
 end
 
--- Register threat update events
-local threatFrame = CreateFrame("Frame")
-threatFrame:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
-threatFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-threatFrame:SetScript("OnEvent", function(self, event, unitID)
-    -- Only validate nameplate pattern for UNIT_THREAT_LIST_UPDATE
-    if event == "UNIT_THREAT_LIST_UPDATE" then
-        if not unitID or not string.find(unitID, "nameplate%d") then return end
-    end
+-- Initialize module (called after SavedVariables load)
+local function Initialize()
+    -- Don't load if module is disabled
+    if not cfFramesDB[addon.MODULES.NAMEPLATE_THREAT_GLOW] then return end
 
-    UpdateThreatGlow(unitID)
-end)
+    -- Register threat update events
+    local threatFrame = CreateFrame("Frame")
+    threatFrame:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
+    threatFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    threatFrame:SetScript("OnEvent", function(self, event, unitID)
+        -- Clean up stale glows when nameplate is reassigned
+        if event == "NAME_PLATE_UNIT_ADDED" then
+            local nameplate = C_NamePlate.GetNamePlateForUnit(unitID)
+            if nameplate and nameplate.UnitFrame and nameplate.UnitFrame.cfThreatGlow then
+                nameplate.UnitFrame.cfThreatGlow:Hide()
+            end
+        end
+
+        -- Only validate nameplate pattern for UNIT_THREAT_LIST_UPDATE
+        if event == "UNIT_THREAT_LIST_UPDATE" then
+            if not unitID or not string.find(unitID, "nameplate%d") then return end
+        end
+
+        UpdateThreatGlow(unitID)
+    end)
+end
+
+-- Register initialization callback
+addon:RegisterModuleInit(Initialize)
