@@ -4,8 +4,8 @@ local addon = cfFrames
 local tickFrame
 local spark
 local previousMana = 0
-local nextManaTickTime = 0      -- When next mana tick will happen (tick tracking mode)
-local fiveSecondRuleEnd = 0     -- When 5-second rule ends (5SR countdown mode)
+local timerEndTime = 0
+local isInFSR = false  -- true = FSR countdown, false = tick tracking
 
 local TICK_INTERVAL = 2
 local FIVE_SEC_RULE = 5
@@ -41,38 +41,21 @@ local function UpdateSparkPosition(self, elapsed)
         return
     end
 
-    local remaining, progress, sparkPos
+    if timerEndTime == 0 then return end
 
-    -- Check which mode we're in based on which timer is active
-    if fiveSecondRuleEnd > 0 then
-        -- 5SR countdown mode (reverse)
-
-        -- Check if 5SR ended, transition to tick tracking
-        if now >= fiveSecondRuleEnd then
-            fiveSecondRuleEnd = 0
-            nextManaTickTime = now + TICK_INTERVAL
-        else
-            -- Show reverse countdown
-            remaining = fiveSecondRuleEnd - now
-            progress = remaining / FIVE_SEC_RULE  -- Reverse: 1.0 to 0.0
-            sparkPos = PlayerFrameManaBar:GetWidth() * progress
-        end
+    -- Check for timer expiration
+    if now >= timerEndTime then
+        isInFSR = false
+        timerEndTime = now + TICK_INTERVAL
     end
 
-    if nextManaTickTime > 0 then
-        -- Tick tracking mode (forward)
+    -- Unified progress calculation
+    local remaining = timerEndTime - now
+    local progress = isInFSR
+        and (remaining / FIVE_SEC_RULE)  -- Reverse for FSR
+        or (1 - remaining / TICK_INTERVAL)  -- Forward for tick
 
-        -- Auto-reset timer if it expired
-        if now >= nextManaTickTime then
-            nextManaTickTime = now + TICK_INTERVAL
-        end
-
-        remaining = nextManaTickTime - now
-        progress = 1 - (remaining / TICK_INTERVAL)
-        sparkPos = PlayerFrameManaBar:GetWidth() * progress
-    end
-
-    if not sparkPos then return end
+    local sparkPos = PlayerFrameManaBar:GetWidth() * progress
 
     spark:ClearAllPoints()
     spark:SetPoint("CENTER", tickFrame, "LEFT", sparkPos, 0)
@@ -81,28 +64,22 @@ end
 
 -- Handle mana changes
 local function OnPowerUpdate(self, event, unit, powerType)
-    if unit ~= "player" then return end
-    if powerType ~= "MANA" then return end
+    if unit ~= "player" or powerType ~= "MANA" then return end
 
     local now = GetTime()
     local currentMana = UnitPower("player", 0)
+    local manaDelta = currentMana - previousMana
 
-    -- Mana decreased = spell cast, start 5SR
-    if currentMana < previousMana then
-        nextManaTickTime = 0  -- Clear tick tracking
-        fiveSecondRuleEnd = now + FIVE_SEC_RULE  -- Start 5SR countdown
+    -- Mana decreased = spell cast, start FSR
+    if manaDelta < 0 then
+        isInFSR = true
+        timerEndTime = now + FIVE_SEC_RULE
         tickFrame:Show()
         tickFrame:SetScript("OnUpdate", UpdateSparkPosition)
-    end
 
-    -- Mana increased while in tick tracking mode = tick detected
-    -- Only reset timer if this seems like a real tick (not a small gain from other sources)
-    if nextManaTickTime > 0 and currentMana > previousMana then
-        local gainAmount = currentMana - previousMana
-        -- Only reset for significant gains (>10 mana, likely a real tick)
-        if gainAmount >= 10 then
-            nextManaTickTime = now + TICK_INTERVAL
-        end
+    -- Mana increased during tick mode = tick detected, reset timer
+    elseif not isInFSR and manaDelta > 0 then
+        timerEndTime = now + TICK_INTERVAL
     end
 
     previousMana = currentMana
@@ -113,10 +90,8 @@ addon:RegisterModuleInit(function()
     if not cfFramesDB[addon.MODULES.RESOURCE_TICKER] then return end
 
     SetupTickBar()
-
-    local frame = CreateFrame("Frame")
-    frame:RegisterEvent("UNIT_POWER_UPDATE")
-    frame:SetScript("OnEvent", OnPowerUpdate)
+    tickFrame:RegisterEvent("UNIT_POWER_UPDATE")
+    tickFrame:SetScript("OnEvent", OnPowerUpdate)
 
     previousMana = UnitPower("player", 0)
 end)
