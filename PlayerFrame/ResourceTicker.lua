@@ -6,18 +6,23 @@ local spark
 local previousMana = 0
 local timerEndTime = 0
 local isInFSR = false  -- true = FSR countdown, false = tick tracking
+local currentInterval = 2
+local manaBarWidth
+local manaBarHeight
 
 local TICK_INTERVAL = 2
 local FIVE_SEC_RULE = 5
 
+local function SetMode(inFSR, now)
+    isInFSR = inFSR
+    currentInterval = inFSR and FIVE_SEC_RULE or TICK_INTERVAL
+    timerEndTime = now + currentInterval
+end
+
 -- Create the tick indicator overlay
 local function SetupTickBar()
-    tickFrame = CreateFrame("StatusBar", nil, PlayerFrameManaBar)
-    tickFrame:SetPoint("TOPLEFT", PlayerFrameManaBar, "TOPLEFT", 2, 0)
-    tickFrame:SetPoint("BOTTOMRIGHT", PlayerFrameManaBar, "BOTTOMRIGHT", 2, 0)
-    tickFrame:SetMinMaxValues(0, TICK_INTERVAL)
-    tickFrame:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-    tickFrame:SetStatusBarColor(0, 0, 0, 0)
+    tickFrame = CreateFrame("Frame", nil, PlayerFrameManaBar)
+    tickFrame:SetAllPoints(PlayerFrameManaBar)
 
     spark = tickFrame:CreateTexture(nil, "OVERLAY")
     spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
@@ -26,6 +31,10 @@ local function SetupTickBar()
     spark:SetVertexColor(1, 1, 1)
 
     tickFrame:Hide()
+
+    -- Cache dimensions
+    manaBarWidth = PlayerFrameManaBar:GetWidth()
+    manaBarHeight = PlayerFrameManaBar:GetHeight()
 end
 
 -- Update spark position
@@ -36,8 +45,8 @@ local function UpdateSparkPosition(self, elapsed)
 
     -- Hide if at full mana
     if currentMana >= maxMana then
-        tickFrame:Hide()
-        tickFrame:SetScript("OnUpdate", nil)
+        self:Hide()
+        self:SetScript("OnUpdate", nil)
         return
     end
 
@@ -45,26 +54,26 @@ local function UpdateSparkPosition(self, elapsed)
 
     -- Check for timer expiration
     if now >= timerEndTime then
-        isInFSR = false
-        timerEndTime = now + TICK_INTERVAL
+        SetMode(false, now)
     end
 
     -- Unified progress calculation
     local remaining = timerEndTime - now
     local progress = isInFSR
-        and (remaining / FIVE_SEC_RULE)  -- Reverse for FSR
-        or (1 - remaining / TICK_INTERVAL)  -- Forward for tick
+        and (remaining / currentInterval)  -- FSR: counts down
+        or (1 - remaining / currentInterval)  -- Tick: counts up
 
-    local sparkPos = PlayerFrameManaBar:GetWidth() * progress
+    local sparkPos = manaBarWidth * progress
 
     spark:ClearAllPoints()
-    spark:SetPoint("CENTER", tickFrame, "LEFT", sparkPos, 0)
-    spark:SetHeight(PlayerFrameManaBar:GetHeight() * 3)
+    spark:SetPoint("CENTER", self, "LEFT", sparkPos, 0)
+    spark:SetHeight(manaBarHeight * 3)
 end
 
 -- Handle mana changes
 local function OnPowerUpdate(self, event, unit, powerType)
-    if unit ~= "player" or powerType ~= "MANA" then return end
+    if unit ~= "player" then return end
+    if powerType ~= "MANA" then return end
 
     local now = GetTime()
     local currentMana = UnitPower("player", 0)
@@ -72,14 +81,13 @@ local function OnPowerUpdate(self, event, unit, powerType)
 
     -- Mana decreased = spell cast, start FSR
     if manaDelta < 0 then
-        isInFSR = true
-        timerEndTime = now + FIVE_SEC_RULE
-        tickFrame:Show()
-        tickFrame:SetScript("OnUpdate", UpdateSparkPosition)
+        SetMode(true, now)
+        self:Show()
+        self:SetScript("OnUpdate", UpdateSparkPosition)
 
     -- Mana increased during tick mode = tick detected, reset timer
     elseif not isInFSR and manaDelta > 0 then
-        timerEndTime = now + TICK_INTERVAL
+        SetMode(false, now)
     end
 
     previousMana = currentMana
