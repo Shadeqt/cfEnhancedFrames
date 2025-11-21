@@ -11,12 +11,15 @@ Init.lua
 # UI
 Interface.lua
 
+# Player Frame Modules
+PlayerFrame\ResourceTicker.lua
+
 # Target Frame Modules
-TargetFrame\TargetFrameHealth.lua
-TargetFrame\TargetFrameClassification.lua
-TargetFrame\TargetFrameThreat.lua
+TargetFrame\Health.lua
+TargetFrame\Classification.lua
+TargetFrame\Threat.lua
 
 # Nameplate Modules
-Nameplates\NameplateHealth.lua
-Nameplates\NameplateClassification.lua
-Nameplates\NameplateThreatGlow.lua
+Nameplate\Health.lua
+Nameplate\Classification.lua
+Nameplate\ThreatGlow.lua

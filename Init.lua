@@ -7,6 +7,8 @@ local addon = cfFrames
 
 -- Module definitions
 addon.MODULES = {
+    -- Player Frame modules
+    RESOURCE_TICKER = "ResourceTicker",
     -- Target Frame modules
     TARGET_HEALTH = "TargetHealth",
     RARE_ELITE = "RareElite",
@@ -57,6 +59,7 @@ addon.CLASSIFICATIONS = {
 }
 
 local dbDefaults = {
+    [addon.MODULES.RESOURCE_TICKER] = true,
     [addon.MODULES.TARGET_HEALTH] = true,
     [addon.MODULES.RARE_ELITE] = true,
     [addon.MODULES.THREAT_GLOW] = true,
@@ -65,26 +68,6 @@ local dbDefaults = {
     [addon.MODULES.NAMEPLATE_CLASSIFICATION] = true,
     [addon.MODULES.NAMEPLATE_THREAT_GLOW] = true,
 }
-
--- Database initialization
-if not db then
-    db = {}
-    cfFramesDB = db
-end
-
--- Apply defaults for any missing keys
-for key, value in pairs(dbDefaults) do
-    if db[key] == nil then
-        db[key] = value
-    end
-end
-
--- Remove keys from DB that aren't in defaults
-for key in pairs(db) do
-    if dbDefaults[key] == nil then
-        db[key] = nil
-    end
-end
 
 -- Module initialization callbacks
 local initCallbacks = {}
@@ -101,7 +84,26 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     if addonName ~= "cfFrames" then return end
     self:UnregisterEvent("ADDON_LOADED")
 
-    -- At this point, SavedVariables have overwritten cfFramesDB
+    -- At this point, SavedVariables have been loaded into cfFramesDB
+    -- Now apply database initialization
+    if not cfFramesDB then
+        cfFramesDB = {}
+    end
+
+    -- Apply defaults for any missing keys
+    for key, value in pairs(dbDefaults) do
+        if cfFramesDB[key] == nil then
+            cfFramesDB[key] = value
+        end
+    end
+
+    -- Remove keys from DB that aren't in defaults
+    for key in pairs(cfFramesDB) do
+        if dbDefaults[key] == nil then
+            cfFramesDB[key] = nil
+        end
+    end
+
     -- Now it's safe to initialize modules
     for _, callback in ipairs(initCallbacks) do
         callback()
