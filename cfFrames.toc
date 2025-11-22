@@ -12,7 +12,7 @@ Init.lua
 Interface.lua
 
 # Player Frame Modules
-PlayerFrame\ResourceTicker.lua
+PlayerFrame\PowerTicker.lua
 
 # Target Frame Modules
 TargetFrame\Health.lua
