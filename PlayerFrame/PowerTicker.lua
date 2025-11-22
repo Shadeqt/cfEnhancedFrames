@@ -114,7 +114,7 @@ local function OnDisplayPowerChanged(self, event)
 end
 
 addon:RegisterModuleInit(function()
-    if not cfFramesDB[addon.MODULES.RESOURCE_TICKER] then return end
+    if not cfFramesDB[addon.MODULES.POWER_TICKER] then return end
 
     local frame = SetupTickBar()
     frame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")

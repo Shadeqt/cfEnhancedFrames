@@ -8,7 +8,7 @@ local addon = cfFrames
 -- Module definitions
 addon.MODULES = {
     -- Player Frame modules
-    RESOURCE_TICKER = "ResourceTicker",
+    POWER_TICKER = "PowerTicker",
     -- Target Frame modules
     TARGET_HEALTH = "TargetHealth",
     RARE_ELITE = "RareElite",
@@ -59,7 +59,7 @@ addon.CLASSIFICATIONS = {
 }
 
 local dbDefaults = {
-    [addon.MODULES.RESOURCE_TICKER] = true,
+    [addon.MODULES.POWER_TICKER] = true,
     [addon.MODULES.TARGET_HEALTH] = true,
     [addon.MODULES.RARE_ELITE] = true,
     [addon.MODULES.THREAT_GLOW] = true,
