@@ -88,8 +88,9 @@ local function SetupThreatUI()
     border:SetAllPoints(numeric)
 
     numericText = numeric:CreateFontString(nil, "BACKGROUND", "TextStatusBarText")
+    numericText:SetFont("Fonts\\FRIZQT__.TTF", 10, "THICKOUTLINE")
+    numericText:SetPoint("TOP", numeric, "TOP", 2, -6)
     numericText:SetDrawLayer("BACKGROUND", 1)
-    numericText:SetPoint("TOP", numeric, "TOP", 0, -4)
 end
 
 -- Module initialization
