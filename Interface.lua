@@ -1,5 +1,4 @@
 -- Localize for performance and consistency
-local db = cfFramesDB
 local addon = cfFrames
 
 -- Module-level state
