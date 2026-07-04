@@ -45,6 +45,15 @@ function addon.SetupWatchedBar()
 
     ApplyVisibility()
 
+    -- The XP and reputation text parents (MainMenuBarOverlayFrame,
+    -- ReputationWatchBar.OverlayFrame) render at DIALOG strata by Blizzard default -- a
+    -- strata above the windowed WorldMapFrame (MEDIUM), so the text we force persistently on
+    -- bled through the open map. Drop them to the bar's own MEDIUM strata: the map's
+    -- high-frame-level content then occludes the text where they overlap, while it still
+    -- draws above the bar art (a lower level within MEDIUM) everywhere else.
+    MainMenuBarOverlayFrame:SetFrameStrata("MEDIUM")
+    ReputationWatchBar.OverlayFrame:SetFrameStrata("MEDIUM")
+
     -- Blizzard doesn't re-render rep on statusTextDisplay changes -- trigger it ourselves;
     -- the hook below picks up the rest.
     local frame = CreateFrame("Frame")
