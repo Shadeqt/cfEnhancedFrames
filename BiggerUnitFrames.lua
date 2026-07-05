@@ -136,7 +136,7 @@ local PARTY_HP_X, PARTY_HP_Y = 47, -12  -- TOPLEFT anchor on the frame (Blizzard
 local PARTY_MANA_H    = 8               -- mana bar height (kept slim; mana follows below health)
 local PARTY_MANA_GAP  = 1               -- px between the health bar's bottom and the mana bar's top
 local PARTY_BG_INSET  = 1               -- px the dark Background extends beyond the bars on each side
-local PARTY_DEBUFF_DROP = 4             -- px to push the debuff row down so it clears the frame art
+local PARTY_DEBUFF_DROP = 6             -- px to push the debuff row down so it clears the frame art
 
 local function FitPartyMember(i)
 	local frame = _G["PartyMemberFrame" .. i]
