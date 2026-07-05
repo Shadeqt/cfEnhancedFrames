@@ -43,7 +43,7 @@ local function ClassForPlayer(name, guid, unit)
 end
 
 local function ColorMenuTitle(name, class)
-	local color = class and RAID_CLASS_COLORS[class]
+	local color = class and addon.ClassColor(class)
 	if not color then return end
 	local menu = Menu.GetManager():GetOpenMenu()
 	if not menu then return end

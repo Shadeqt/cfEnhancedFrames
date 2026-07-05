@@ -59,6 +59,7 @@ function addon.SetupSettings()
 	Header("Class Colors")
 	Checkbox("ClassColors", "Health Bar Colors", "Color unit-frame health bars by class (nameplate class colors live in the cfPlates addon)")
 	Checkbox("ClassColorText", "Chat, Names & Levels", "Class-color player names, class words, and level numbers across chat, friends/guild/who lists, right-click menus, and tooltips")
+	Checkbox("ShamanColorFix", "Shaman Color", "Recolor Era's pink Shaman class color to blue across cfFrames' coloring, chat names, and Blizzard's own raid frames")
 
 	-- Pet
 	Header("Pet")
@@ -85,7 +86,6 @@ function addon.SetupSettings()
 	Checkbox("PetActionBarCheckedFix", "Pet Action Bar Checked Fix", "Align pet button checked textures with their icon")
 	Checkbox("UnitFrameResetFix", "Unit Frame Reset Fix", "Persist reset-to-default frame positions across reload")
 	Checkbox("PetManaBarOverlapFix", "Pet Mana Bar Overlap Fix", "Drop the pet mana bar 1px so it no longer overlaps the pet health bar")
-	Checkbox("ShamanColorFix", "Shaman Color Fix", "Recolor Era's pink Shaman class color to blue, ecosystem-wide (cfSwingTimer's main-hand bar and other class-color readers follow it)")
 
 	Settings.RegisterAddOnCategory(category)
 

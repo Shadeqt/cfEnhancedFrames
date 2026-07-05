@@ -2,8 +2,8 @@ local _, addon = ...
 
 -- The health-bar class tint: one of the two class-color coloring features under the "Class Colors" GUI
 -- header (the other being the social-text coloring in this folder -- ChatColors / ClassNames / NameColors
--- / LevelColors). Reads RAID_CLASS_COLORS live at show time -- whatever has patched it -- so it follows
--- the Shaman-blue correction (Fixes/ShamanColorFix.lua) without any patch or classNameToToken of its own.
+-- / LevelColors). Resolves class colors through addon.ClassColor (ClassColors/Core.lua), which returns
+-- the Shaman-blue correction locally without patching the shared RAID_CLASS_COLORS global.
 --
 -- Tints unit-frame health bars by class (players), pet friend/hostile, tap state, or selection color
 -- (hostile NPCs). Also neutralizes the target's reaction-tinted name backing to a translucent black.
@@ -17,7 +17,12 @@ local _, addon = ...
 local function GetColor(unit)
 	if UnitIsPlayer(unit) then
 		local _, class = UnitClass(unit)
-		if class then return GetClassColor(class) end
+		-- addon.ClassColor, not GetClassColor: the latter reads RAID_CLASS_COLORS (which we no longer
+		-- patch), so it would still return Era's pink Shaman. The resolver substitutes blue for Shaman.
+		if class then
+			local c = addon.ClassColor(class)
+			if c then return c.r, c.g, c.b end
+		end
 	elseif UnitPlayerControlled(unit) then
 		if UnitIsFriend("player", unit) then return 0, 1, 0 end
 		return 1, 0, 0

@@ -95,6 +95,7 @@ addon.defaults = {
 	-- Class Colors (absorbed from cfClassColors): two coloring toggles under one GUI header.
 	ClassColors               = true,   -- health-bar tint (Healthbars.lua)
 	ClassColorText            = true,   -- social-text coloring: chat / class words / level numbers / menus
+	ShamanColorFix            = true,   -- Era Shaman pink -> blue, local: Core.lua resolver + chat rewrite + native raid frames (ShamanColor.lua)
 	-- Pet (absorbed from cfPet): pet-frame additions, class-gated per feature.
 	PetLevelBadge             = true,   -- Hunter pet level badge (Pet/Level.lua)
 	PetXpBar                  = true,   -- Hunter pet XP bar (Pet/XpBar.lua)
@@ -115,7 +116,6 @@ addon.defaults = {
 	PetActionBarCheckedFix    = true,
 	UnitFrameResetFix         = true,
 	PetManaBarOverlapFix      = true,
-	ShamanColorFix            = true,   -- Era Shaman pink -> blue; patched at file scope (Fixes/ShamanColorFix.lua)
 	-- Stored value: chosen status-bar texture (StatusBar on/off is encoded here;
 	-- the GUI's "Blizzard Default" dropdown entry = feature off).
 	StatusBarTexture = "Interface\\AddOns\\cfFrames\\Media\\StatusBar\\smooth",
@@ -155,8 +155,10 @@ EventUtil.ContinueOnAddOnLoaded(addonName, function()
 		addon.SetupDruidBar()
 		addon.SetupHideNative()
 		-- Class colors: health-bar tint + the four social-text coloring features (absorbed from
-		-- cfClassColors). The Shaman-blue patch is a separate Fix (Fixes/ShamanColorFix.lua, file scope).
+		-- cfClassColors). SetupShamanColor corrects Blizzard's OWN raid frames to blue; the resolver in
+		-- ClassColors/Core.lua plus the chat rewrite cover cfFrames' own surfaces.
 		addon.SetupClassColorHealthbars()
+		addon.SetupShamanColor()
 		addon.SetupChatColors()
 		addon.SetupClassNameColors()
 		addon.SetupNameMenuColors()

@@ -7,6 +7,7 @@
 
 Init.lua
 ClassColors\Core.lua
+ClassColors\ShamanColor.lua
 ClassColors\Healthbars.lua
 ClassColors\ChatColors.lua
 ClassColors\ClassNames.lua
@@ -36,5 +37,4 @@ Fixes\ActionBarIconPositionFix.lua
 Fixes\PetActionBarCheckedFix.lua
 Fixes\UnitFrameResetFix.lua
 Fixes\PetManaBarOverlap.lua
-Fixes\ShamanColorFix.lua
 Settings.lua

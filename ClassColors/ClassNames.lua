@@ -17,7 +17,7 @@ local function ColorClassInText(fontString)
 	text = StripPinkShaman(text)
 	for className, token in pairs(classNameToToken) do
 		if text:find(className, 1, true) then
-			local color = RAID_CLASS_COLORS[token]
+			local color = addon.ClassColor(token)
 			if color then
 				local colored = color:WrapTextInColorCode(className)
 				if text:find(colored, 1, true) then return true end  -- already colored; idempotent (no re-wrap)
@@ -29,7 +29,7 @@ local function ColorClassInText(fontString)
 end
 
 local function ColorByClass(fontString, class)
-	local c = RAID_CLASS_COLORS[class]
+	local c = addon.ClassColor(class)
 	if c then fontString:SetTextColor(c.r, c.g, c.b) end
 end
 
@@ -46,7 +46,7 @@ local function ResolveBNetClass(friendIndex)
 	if not gameInfo or not gameInfo.isOnline or gameInfo.clientProgram ~= BNET_CLIENT_WOW then return end
 	local charName = gameInfo.characterName
 	local token = charName and classNameToToken[gameInfo.className or ""]
-	local color = token and RAID_CLASS_COLORS[token]
+	local color = token and addon.ClassColor(token)
 	if not color then return end
 	return gameInfo, color, charName
 end
